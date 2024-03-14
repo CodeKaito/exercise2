@@ -1,9 +1,10 @@
 import React from 'react';
 import { Card, Button } from 'react-bootstrap';
 import './moviecard.css';
+import ReactHtmlParser from 'html-react-parser';
 
 function MovieCard(props) {
-    const { id, title, image, summary, rating, onFavourite } = props;
+    const { id, title, image, summary, rating, onFavourite, onRemove, isFavouritePage } = props;
 
     return (
         <Card bg='dark' text="light" border='primary' style={{ width: "18rem"}}>
@@ -16,13 +17,15 @@ function MovieCard(props) {
             <Card.Body>
                 <Card.Title>Trama</Card.Title>
                 <Card.Text>
-                    {summary}
+                    {summary ? ReactHtmlParser(summary) : "Trama non disponibile"}
                 </Card.Text>
             </Card.Body>
             <Card.Footer>
-                <small>Punteggio: {rating ? rating : "Punteggio non disponibile"}</small>
+                <small>Punteggio: {rating ?? "Punteggio non disponibile"}</small>
             </Card.Footer>
-            <Button onClick={onFavourite}>Add to Fav</Button>
+            {isFavouritePage 
+            ? <Button variant='danger' onClick={onRemove}>Remove from Fav</Button> 
+            : <Button variant='primary' onClick={onFavourite}>Add to Fav</Button>}
         </Card>
     );
 }

@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
-import { Tabs, Alert, Tab } from 'react-bootstrap';
+// Correzioni aggiunte al componente App
 
+import React, { useEffect, useState } from 'react';
+import { Tabs, Alert, Tab } from 'react-bootstrap';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Nav from './components/Nav';
@@ -8,70 +9,66 @@ import SearchBar from './components/SearchBar';
 import MovieList from './components/MovieList';
 
 function App() {
-
   const API_ENDPOINT = 'https://api.tvmaze.com/search/shows?q=';
 
-  // array contenente i dati presi dalla API
   const [result, setResult] = useState([]);
-
-  const [currentTab, setCurrenTab] = useState("search");
-
+  const [message, setMessage] = useState("");
+  const [currentTab, setCurrentTab] = useState("search");
   const [favourites, setFavourites] = useState([]);
 
-  // Funzione per aggiungere ai favourites
+  useEffect(() => {
+    const localFavourites = localStorage.getItem("favourites");
+    if (localFavourites) {
+      setFavourites(JSON.parse(localFavourites));
+    }
+  }, []);
+
   function addToFavourites(item) {
-    // Aggiungi l'elemento alla lista precedente
     setFavourites((prev) => [...prev, item]);
+    setMessage("Elemento aggiunto ai preferiti");
+    localStorage.setItem("favourites", JSON.stringify([...favourites, item]));
   }
 
-  // Funzione per chiamata API
+  function removeFromFavourites(item) {
+    setFavourites((prev) => prev.filter(el => el.show.id !== item.show.id));
+    setMessage("Elemento rimosso dai preferiti");
+    localStorage.setItem("favourites", JSON.stringify(favourites.filter(el => el.show.id !== item.show.id)));
+  }
+
   async function handleSearch(event, value) {
     event.preventDefault();
-    
     try {
-      // Chiamata GET all'url API_ENDPOINT
-      const response = await fetch(`${API_ENDPOINT}{value}`);
-
+      const response = await fetch(`${API_ENDPOINT}${value}`);
       if (response.ok) {
-        // Prendiamo il risultato della chiamata API
-        const result = await response.json();
-
-        // Andiamo a settare la variabile di stato "results" al risultato dell'API
-        setResult(result);
-
-        console.log(result);
-
-        // Gestione di imprevisti
-        if (result.length <= 0) {
-          alert('Nessun risultato trovato');
+        const data = await response.json();
+        setResult(data);
+        if (data.length === 0) {
+          setMessage('Nessun risultato trovato');
+        } else {
+          setMessage('');
         }
       } else {
-        const error = new Error(`HTTP error! Status: ${response.status}`);
-        error.response = response;
-        throw error;
+        throw new Error(`Errore HTTP! Stato: ${response.status}`);
       }
-
     } catch (error) {
-      // Consolelog dell'errore
-      console.log(error);
+      console.error('Errore durante la ricerca:', error);
+      setMessage('Errore durante la ricerca');
     }
-
   }
 
   return (
     <div className="App">
       <Nav />
-      <Tabs defaultActiveKey="search" id='app-tab' className='mb-3 mt-4' activeKey={currentTab} onSelect={(el) => setCurrenTab(el)}>
+      {message && <Alert className='alert' dismissible variant='primary'>{message}</Alert>}
+      <Tabs defaultActiveKey="search" id='app-tab' className='mb-3 mt-4' activeKey={currentTab} onSelect={(el) => setCurrentTab(el)}>
         <Tab eventKey="search" title="Search">
           <SearchBar onSearch={handleSearch} />
-          <MovieList data={result} onFavourite={addToFavourites} />
+          <MovieList data={result} onFavourite={addToFavourites} isFavouritePage={false} />
         </Tab>
         <Tab eventKey="favourite" title="Favourites">
-          <h1>favourite</h1>
-          <MovieList data={favourites} />
+          <MovieList data={favourites} onRemove={removeFromFavourites} isFavouritePage={true} />
         </Tab>
       </Tabs>
-      
     </div>
   );
 }
