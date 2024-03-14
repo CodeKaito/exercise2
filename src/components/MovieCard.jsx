@@ -22,7 +22,7 @@ function MovieCard(props) {
             <Card.Footer>
                 <small>Punteggio: {rating ? rating : "Punteggio non disponibile"}</small>
             </Card.Footer>
-            <Button>Add to Fav</Button> {/* Aggiungi qui la logica per l'aggiunta ai preferiti */}
+            <Button>Add to Fav</Button>
         </Card>
     );
 }
