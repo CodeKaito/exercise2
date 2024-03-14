@@ -4,7 +4,7 @@ import './moviecard.css';
 import ReactHtmlParser from 'html-react-parser';
 
 function MovieCard(props) {
-    const { id, title, image, summary, rating, onFavourite, onRemove, isFavouritePage } = props;
+    const { title, image, summary, rating, onFavourite, onRemove, isFavouritePage } = props;
 
     return (
         <Card bg='dark' text="light" border='primary' style={{ width: "18rem"}}>
