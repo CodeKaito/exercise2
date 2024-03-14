@@ -3,7 +3,7 @@ import { Card, Button } from 'react-bootstrap';
 import './moviecard.css';
 
 function MovieCard(props) {
-    const { id, title, image, summary, rating } = props;
+    const { id, title, image, summary, rating, onFavourite } = props;
 
     return (
         <Card bg='dark' text="light" border='primary' style={{ width: "18rem"}}>
@@ -22,7 +22,7 @@ function MovieCard(props) {
             <Card.Footer>
                 <small>Punteggio: {rating ? rating : "Punteggio non disponibile"}</small>
             </Card.Footer>
-            <Button>Add to Fav</Button>
+            <Button onClick={onFavourite}>Add to Fav</Button>
         </Card>
     );
 }

@@ -3,7 +3,7 @@ import './movielist.css';
 import MovieCard from './MovieCard';
 
 function MovieList(props) {
-    const { data } = props; // Estrai data dalle props
+    const { data, onFavourite } = props; // Estrai data dalle props
 
     return (
         <div className='movies-container mt-5'>
@@ -11,10 +11,11 @@ function MovieList(props) {
                 <MovieCard
                     key={el.show.id}
                     id={el.show.id}
-                    title={el.show.title}
+                    title={el.show.name}
                     image={el.show?.image.original ?? ""}
                     summary={el.show.summary ?? ""}
                     rating={el.show.average}
+                    onFavourite={() => onFavourite(el)}
                 />
             ))}
         </div>

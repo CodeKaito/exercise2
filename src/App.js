@@ -16,6 +16,14 @@ function App() {
 
   const [currentTab, setCurrenTab] = useState("search");
 
+  const [favourites, setFavourites] = useState([]);
+
+  // Funzione per aggiungere ai favourites
+  function addToFavourites(item) {
+    // Aggiungi l'elemento alla lista precedente
+    setFavourites((prev) => [...prev, item]);
+  }
+
   // Funzione per chiamata API
   async function handleSearch(event, value) {
     event.preventDefault();
@@ -56,10 +64,11 @@ function App() {
       <Tabs defaultActiveKey="search" id='app-tab' className='mb-3 mt-4' activeKey={currentTab} onSelect={(el) => setCurrenTab(el)}>
         <Tab eventKey="search" title="Search">
           <SearchBar onSearch={handleSearch} />
-          <MovieList data={result} />
+          <MovieList data={result} onFavourite={addToFavourites} />
         </Tab>
-        <Tab eventKey="favourite" title="Favs">
+        <Tab eventKey="favourite" title="Favourites">
           <h1>favourite</h1>
+          <MovieList data={favourites} />
         </Tab>
       </Tabs>
       
