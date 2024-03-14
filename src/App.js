@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { Tabs, Alert, Tab } from 'react-bootstrap';
+
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Nav from './components/Nav';
@@ -11,6 +13,8 @@ function App() {
 
   // array contenente i dati presi dalla API
   const [result, setResult] = useState([]);
+
+  const [currentTab, setCurrenTab] = useState("search");
 
   // Funzione per chiamata API
   async function handleSearch(event, value) {
@@ -49,8 +53,16 @@ function App() {
   return (
     <div className="App">
       <Nav />
-      <SearchBar onSearch={handleSearch} />
-      <MovieList data={result} />
+      <Tabs defaultActiveKey="search" id='app-tab' className='mb-3 mt-4' activeKey={currentTab} onSelect={(el) => setCurrenTab(el)}>
+        <Tab eventKey="search" title="Search">
+          <SearchBar onSearch={handleSearch} />
+          <MovieList data={result} />
+        </Tab>
+        <Tab eventKey="favourite" title="Favs">
+          <h1>favourite</h1>
+        </Tab>
+      </Tabs>
+      
     </div>
   );
 }
